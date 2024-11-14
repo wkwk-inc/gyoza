@@ -1,0 +1,107 @@
+
+extend type Mutation {
+  signUp(input: SignUpInput!): SignUpPayload
+  confirmSignUp(input: ConfirmSignUpInput!): ConfirmSignUpPayload
+  signIn(input: SignInInput!): SignInPayload
+  signOut(input: SignOutInput!): SignOutPayload
+  refreshToken(input: RefreshTokenInput!): RefreshTokenPayload
+}
+
+input SignUpInput {
+  clientMutationId: String
+  username: String!
+  password: String!
+  email: String!
+}
+
+enum DeliveryMedium {
+  EMAIL
+  SMS
+}
+
+type CodeDeliveryDetails {
+  destination: String
+  deliveryMedium: DeliveryMedium
+  attributeName: String
+}
+
+type SignUpPayload {
+  clientMutationId: String
+  userConfirmed: Boolean
+  codeDeliveryDetails: CodeDeliveryDetails
+  userSub: UUID
+}
+
+input ConfirmSignUpInput {
+  clientMutationId: String
+  username: String!
+  confirmationCode: String!
+}
+
+type ConfirmSignUpPayload {
+  clientMutationId: String
+  userConfirmed: Boolean
+}
+
+input SignInInput {
+  clientMutationId: String
+  username: String!
+  password: String!
+}
+
+type NewDeviceMetadata {
+  deviceKey: String
+  deviceGroupKey: String
+}
+
+type AuthenticationResult {
+  accessToken: String
+  expiresIn: Int
+  tokenType: String
+  refreshToken: String
+  idToken: String
+  newDeviceMetadata: NewDeviceMetadata
+}
+
+enum ChallengeName {
+  ADMIN_NO_SRP_AUTH
+  CUSTOM_CHALLENGE
+  DEVICE_PASSWORD_VERIFIER
+  DEVICE_SRP_AUTH
+  MFA_SETUP
+  NEW_PASSWORD_REQUIRED
+  PASSWORD_VERIFIER
+  SELECT_MFA_TYPE
+  SMS_MFA
+  SOFTWARE_TOKEN_MFA
+}
+
+type SignInPayload {
+  clientMutationId: String
+  authenticationResult: AuthenticationResult
+  session: String
+  challengeName: ChallengeName
+}
+
+input SignOutInput {
+  clientMutationId: String
+  refreshToken: String
+  accessToken: String
+}
+
+type SignOutPayload {
+  clientMutationId: String
+}
+
+input RefreshTokenInput {
+  clientMutationId: String
+  refreshToken: String!
+  username: String!
+}
+
+type RefreshTokenPayload {
+  clientMutationId: String
+  authenticationResult: AuthenticationResult
+  session: String
+  challengeName: ChallengeName
+}

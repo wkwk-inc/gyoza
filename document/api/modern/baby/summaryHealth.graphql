@@ -1,0 +1,101 @@
+
+extend type Baby {
+  summaryHealth(
+    id: ID!
+  ): SummaryHealth
+  summaryHealthes(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: SummaryHealthFilter
+    orderBy: SummaryHealthOrder
+    includeDeleted: Boolean
+  ): SummaryHealthConnection
+}
+
+extend type Mutation {
+  createSummaryHealth(input: CreateSummaryHealthInput!): CreateSummaryHealthPayload
+  updateSummaryHealth(input: UpdateSummaryHealthInput!): UpdateSummaryHealthPayload
+  deleteSummaryHealth(input: DeleteSummaryHealthInput!): DeleteSummaryHealthPayload
+}
+
+type SummaryHealth implements Node {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  date: Date!
+  temperature: Float
+  feeling: Int
+  inProgress: Boolean
+}
+
+input SummaryHealthFilter {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  date: DateTimeFilter
+  temperature: FloatFilter
+  feeling: IntFilter
+  inProgress: BooleanFilter
+}
+
+input SummaryHealthOrder {
+  direction: OrderDirection!
+  field: SummaryHealthOrderField!
+}
+
+enum SummaryHealthOrderField {
+  Date
+}
+
+type SummaryHealthConnection {
+  edges: [SummaryHealthEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type SummaryHealthEdge {
+  cursor: String!
+  node: SummaryHealth!
+}
+
+input CreateSummaryHealthInput {
+  clientMutationId: String
+  babyId: ID!
+  date: Date!
+  temperature: Int
+  feeling: Int
+  inProgress: Boolean
+}
+
+type CreateSummaryHealthPayload {
+  clientMutationId: String
+  summaryHealth: SummaryHealth
+}
+
+input UpdateSummaryHealthInput {
+  clientMutationId: String
+  babyId: ID!
+  date: Date!
+  temperature: Int
+  feeling: Int
+  inProgress: Boolean
+}
+
+type UpdateSummaryHealthPayload {
+  clientMutationId: String
+  summaryHealth: SummaryHealth
+}
+
+input DeleteSummaryHealthInput {
+  clientMutationId: String
+  babyId: ID!
+  date: Date!
+}
+
+type DeleteSummaryHealthPayload {
+  clientMutationId: String
+  summaryHealth: SummaryHealth
+}

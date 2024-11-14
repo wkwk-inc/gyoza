@@ -1,0 +1,105 @@
+
+extend type Query {
+  nursery(
+    id: ID!
+  ): Nursery
+  nurseries(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: NurseryFilter
+    orderBy: NurseryOrder
+    query: String
+    includeDeleted: Boolean
+  ): NurseryConnection!
+}
+
+extend type Sitter {
+  nursery: Nursery
+  nurseries(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: NurseryFilter
+    orderBy: NurseryOrder
+    query: String
+    includeDeleted: Boolean
+  ): NurseryConnection
+}
+
+extend type Baby {
+  nursery: Nursery
+  nurseries(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: NurseryFilter
+    orderBy: NurseryOrder
+    query: String
+    includeDeleted: Boolean
+  ): NurseryConnection
+}
+
+extend type Mutation {
+  createNursery(input: CreateNurseryInput!): CreateNurseryPayload
+}
+
+type Nursery implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  deletedAt: DateTime
+  name: String!
+  organizationName: String
+  phoneNumber: String
+  faxNumber: String
+  address: Address
+}
+
+input NurseryFilter {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  name: StringFilter
+  organizationName: StringFilter
+  phoneNumber: StringFilter
+  faxNumber: StringFilter
+  address: StringFilter
+}
+
+input NurseryOrder {
+  direction: OrderDirection!
+  field: NurseryOrderField!
+}
+
+enum NurseryOrderField {
+  CreatedAt
+}
+
+type NurseryConnection {
+  edges: [NurseryEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type NurseryEdge {
+  cursor: String!
+  node: Nursery!
+}
+
+input CreateNurseryInput {
+  clientMutationId: String
+  name: String!
+  organizationName: String
+  phoneNumber: String
+  faxNumber: String
+  address: AddressInput
+}
+
+type CreateNurseryPayload {
+  clientMutationId: String
+  nursery: Nursery
+}

@@ -1,0 +1,140 @@
+
+extend type Query {
+  sitter(
+    id: ID!
+  ): Sitter
+  sitters(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: SitterFilter
+    orderBy: SitterOrder
+    query: String
+    includeDeleted: Boolean
+  ): SitterConnection!
+}
+
+extend type Nursery {
+  sitter(
+    id: ID!
+  ): Sitter
+  sitters(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: SitterFilter
+    orderBy: SitterOrder
+    query: String
+    includeDeleted: Boolean
+    isAdmin: Boolean
+  ): SitterNurseryConnection
+}
+
+extend type Room {
+  sitters(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: SitterFilter
+    orderBy: SitterOrder
+    query: String
+    includeDeleted: Boolean
+  ): SitterRoomConnection
+}
+
+extend type Mutation {
+  createSitter(input: CreateSitterInput!): CreateSitterPayload
+}
+
+type Sitter implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  deletedAt: DateTime
+  name: String!
+  phoneticName: String
+  gender: Gender
+  phoneNumber: String
+  email: String
+  profilePicture: File
+  defaultAvatar: Int
+  signedInAt: DateTime
+}
+
+input SitterFilter {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  name: StringFilter
+  phoneticName: StringFilter
+  gender: Gender
+  phoneNumber: StringFilter
+  email: StringFilter
+  signedInAt: DateTimeFilter
+}
+
+input SitterOrder {
+  direction: OrderDirection!
+  field: SitterOrderField!
+}
+
+enum SitterOrderField {
+  CreatedAt
+}
+
+type SitterConnection {
+  edges: [SitterEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type SitterEdge {
+  cursor: String!
+  node: Sitter!
+}
+
+type SitterNurseryConnection {
+  edges: [SitterNurseryEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type SitterNurseryEdge {
+  cursor: String!
+  node: Sitter!
+  deletedAt: DateTime
+  isAdmin: Boolean
+}
+
+type SitterRoomConnection {
+  edges: [SitterRoomEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type SitterRoomEdge {
+  cursor: String!
+  node: Sitter!
+  deletedAt: DateTime
+}
+
+input CreateSitterInput {
+  clientMutationId: String
+  name: String!
+  phoneticName: String
+  gender: Gender
+  phoneNumber: String
+  email: String
+  profilePicture: FileInput
+  defaultAvatar: Int
+}
+
+type CreateSitterPayload {
+  clientMutationId: String
+  sitter: Sitter
+}

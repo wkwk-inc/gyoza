@@ -1,0 +1,94 @@
+
+extend type Query {
+  sensorMessage(
+    id: ID!
+  ): SensorMessage
+  sensorMessages(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: SensorMessageFilter
+    orderBy: SensorMessageOrder
+    includeDeleted: Boolean
+  ): SensorMessageConnection!
+}
+
+extend type Mutation {
+  createSensorMessage(input: CreateSensorMessageInput!): CreateSensorMessagePayload
+}
+
+type SensorMessage implements Node {
+  id: ID!
+  babyId: String!
+  deviceId: String!
+  date: String!
+  time: String!
+  count: Int!
+  accelerationX: String!
+  accelerationY: String!
+  accelerationZ: String!
+  temperature: String!
+  heartRateRaw: Int!
+  heartRateFFT: Int!
+  breathingFFT: Int!
+}
+
+input SensorMessageFilter {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  babyId: StringFilter
+  deviceId: StringFilter
+  date: StringFilter
+  time: StringFilter
+  count: IntFilter
+  accelerationX: StringFilter
+  accelerationY: StringFilter
+  accelerationZ: StringFilter
+  temperature: StringFilter
+  heartRateRaw: IntFilter
+  heartRateFFT: IntFilter
+  breathingFFT: IntFilter
+}
+
+input SensorMessageOrder {
+  direction: OrderDirection!
+  field: SensorMessageOrderField!
+}
+
+enum SensorMessageOrderField {
+  CreatedAt
+}
+
+type SensorMessageConnection {
+  edges: [SensorMessageEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type SensorMessageEdge {
+  cursor: String!
+  node: SensorMessage!
+}
+
+input CreateSensorMessageInput {
+  clientMutationId: String
+  babyId: String!
+  deviceId: String!
+  date: String!
+  time: String!
+  count: Int!
+  accelerationX: String!
+  accelerationY: String!
+  accelerationZ: String!
+  temperature: String!
+  heartRateRaw: Int!
+  heartRateFFT: Int!
+  breathingFFT: Int!
+}
+
+type CreateSensorMessagePayload {
+  clientMutationId: String
+  sensorMessage: SensorMessage
+}

@@ -1,0 +1,66 @@
+
+extend type Nursery {
+  room(
+    id: ID!
+  ): Room
+  rooms(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: RoomFilter
+    orderBy: RoomOrder
+    includeDeleted: Boolean
+  ): RoomConnection
+}
+
+extend type Mutation {
+  createRoom(input: CreateRoomInput!): CreateRoomPayload
+}
+
+type Room implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  deletedAt: DateTime
+  name: String!
+}
+
+input RoomFilter {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  name: StringFilter
+}
+
+input RoomOrder {
+  direction: OrderDirection!
+  field: RoomOrderField!
+}
+
+enum RoomOrderField {
+  CreatedAt
+}
+
+type RoomConnection {
+  edges: [RoomEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type RoomEdge {
+  cursor: String!
+  node: Room!
+}
+
+input CreateRoomInput {
+  clientMutationId: String
+  roomNurseryId: ID!
+  nurseryId: ID
+  name: String!
+}
+
+type CreateRoomPayload {
+  clientMutationId: String
+  nursery: Room
+}

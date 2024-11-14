@@ -1,0 +1,99 @@
+
+extend type Baby {
+  sleepCondition(
+    id: ID!
+  ): SleepCondition
+  sleepConditions(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: SleepConditionFilter
+    orderBy: SleepConditionOrder
+    includeDeleted: Boolean
+  ): SleepConditionConnection
+}
+
+extend type Mutation {
+  createSleepCondition(input: CreateSleepConditionInput!): CreateSleepConditionPayload
+}
+
+type SleepCondition implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  deletedAt: DateTime
+  checkedAt: DateTime!
+  sitterId: ID
+  isChecked: Boolean
+  sleepPosition: SleepPosition!
+  isSleepPositionCorrected: Boolean
+  hasCoughing: Boolean
+  hasRunnyNose: Boolean
+  hasBlockedNose: Boolean
+  hasWheezing: Boolean
+  hasSnoring: Boolean
+}
+
+enum SleepPosition {
+  Up
+  Down
+  Left
+  Right
+}
+
+input SleepConditionFilter {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  checkedAt: DateTimeFilter
+  sitterId: String
+  isChecked: BooleanFilter
+  sleepPosition: SleepPosition
+  isSleepPositionCorrected: BooleanFilter
+  hasCoughing: BooleanFilter
+  hasRunnyNose: BooleanFilter
+  hasBlockedNose: BooleanFilter
+  hasWheezing: BooleanFilter
+  hasSnoring: BooleanFilter
+}
+
+input SleepConditionOrder {
+  direction: OrderDirection!
+  field: SleepConditionOrderField!
+}
+
+enum SleepConditionOrderField {
+  CreatedAt
+}
+
+type SleepConditionConnection {
+  edges: [SleepConditionEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type SleepConditionEdge {
+  cursor: String!
+  node: SleepCondition!
+}
+
+input CreateSleepConditionInput {
+  clientMutationId: String
+  babyId: ID!
+  nurseryId: ID!
+  sitterId: ID
+  checkedAt: DateTime!
+  sleepPosition: SleepPosition!
+  isChecked: Boolean
+  hasCoughing: Boolean
+  hasRunnyNose: Boolean
+  hasBlockedNose: Boolean
+  hasWheezing: Boolean
+  hasSnoring: Boolean
+}
+
+type CreateSleepConditionPayload {
+  clientMutationId: String
+  sleepCondition: SleepCondition
+}

@@ -1,0 +1,94 @@
+
+extend type Baby {
+  sleep(
+    id: ID!
+  ): Sleep
+  sleeps(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: SleepFilter
+    orderBy: SleepOrder
+    includeDeleted: Boolean
+  ): SleepConnection
+  sleepStartedAt: DateTime
+}
+
+extend type Mutation {
+  createSleep(input: CreateSleepInput!): CreateSleepPayload
+  updateSleep(input: UpdateSleepInput!): UpdateSleepPayload
+  deleteSleep(input: DeleteSleepInput!): DeleteSleepPayload
+}
+
+type Sleep implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  deletedAt: DateTime
+  startEnd: StartEnd!
+}
+
+enum StartEnd {
+  START
+  END
+}
+
+input SleepFilter {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  startEnd: StartEnd
+}
+
+input SleepOrder {
+  direction: OrderDirection!
+  field: SleepOrderField!
+}
+
+enum SleepOrderField {
+  CreatedAt
+}
+
+type SleepConnection {
+  edges: [SleepEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type SleepEdge {
+  cursor: String!
+  node: Sleep!
+}
+
+input CreateSleepInput {
+  clientMutationId: String
+  babyId: ID!
+  startEnd: StartEnd!
+}
+
+type CreateSleepPayload {
+  clientMutationId: String
+  sleep: Sleep
+}
+
+input UpdateSleepInput {
+  clientMutationId: String
+  id: ID!
+  startEnd: StartEnd!
+}
+
+type UpdateSleepPayload {
+  clientMutationId: String
+  sleep: Sleep
+}
+
+input DeleteSleepInput {
+  clientMutationId: String
+  id: ID!
+}
+
+type DeleteSleepPayload {
+  clientMutationId: String
+  sleep: Sleep
+}

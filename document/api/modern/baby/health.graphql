@@ -1,0 +1,91 @@
+
+extend type Baby {
+  health(
+    id: ID!
+  ): Health
+  healthes(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: HealthFilter
+    orderBy: HealthOrder
+    includeDeleted: Boolean
+  ): HealthConnection
+}
+
+extend type Mutation {
+  createHealth(input: CreateHealthInput!): CreateHealthPayload
+  updateHealth(input: UpdateHealthInput!): UpdateHealthPayload
+  deleteHealth(input: DeleteHealthInput!): DeleteHealthPayload
+}
+
+type Health implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  date: Date!
+  condition: String
+}
+
+input HealthFilter {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  date: DateTimeFilter
+  condition: StringFilter
+}
+
+input HealthOrder {
+  direction: OrderDirection!
+  field: HealthOrderField!
+}
+
+enum HealthOrderField {
+  CreatedAt
+}
+
+type HealthConnection {
+  edges: [HealthEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type HealthEdge {
+  cursor: String!
+  node: Health!
+}
+
+input CreateHealthInput {
+  clientMutationId: String
+  babyId: String!
+  date: Date!
+  condition: String
+}
+
+type CreateHealthPayload {
+  clientMutationId: String
+  health: Health
+}
+
+input UpdateHealthInput {
+  clientMutationId: String
+  id: ID!
+  condition: String
+}
+
+type UpdateHealthPayload {
+  clientMutationId: String
+  health: Health
+}
+
+input DeleteHealthInput {
+  clientMutationId: String
+  id: ID!
+}
+
+type DeleteHealthPayload {
+  clientMutationId: String
+  health: Health
+}

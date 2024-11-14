@@ -1,0 +1,147 @@
+
+enum OrderDirection {
+  Asc
+  Desc
+}
+
+input BooleanFilter {
+  equals: Boolean
+  not: Boolean
+}
+
+input BooleanListFilter {
+  equals: [Boolean!]
+  has: Boolean
+  hasEvery: [Boolean!]
+  hasSome: [Boolean!]
+  isEmpty: Boolean
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: Int
+}
+
+input IntListFilter {
+  equals: [Int!]
+  has: Int
+  hasEvery: [Int!]
+  hasSome: [Int!]
+  isEmpty: Boolean
+}
+
+input FloatFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: Float
+}
+
+input FloatListFilter {
+  equals: [Float!]
+  has: Float
+  hasEvery: [Float!]
+  hasSome: [Float!]
+  isEmpty: Boolean
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  search: String
+  not: String
+}
+
+input StringListFilter {
+  equals: [String!]
+  has: String
+  hasEvery: [String!]
+  hasSome: [String!]
+  isEmpty: Boolean
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTime
+}
+
+input DateTimeListFilter {
+  equals: [DateTime!]
+  has: DateTime
+  hasEvery: [DateTime!]
+  hasSome: [DateTime!]
+  isEmpty: Boolean
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Address {
+  country: String
+  postalCode: String
+  prefecture: String
+  city: String
+  addressLine1: String
+  addressLine2: String
+}
+
+input AddressInput {
+  country: String
+  postalCode: String
+  prefecture: String
+  city: String
+  addressLine1: String
+  addressLine2: String
+}
+
+type File {
+  region: String!
+  bucket: String!
+  key: String!
+}
+
+input FileInput {
+  region: String!
+  bucket: String!
+  key: String!
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum BloodType {
+  A
+  B
+  O
+  AB
+}

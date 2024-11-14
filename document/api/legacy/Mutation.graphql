@@ -1,0 +1,240 @@
+// この GraphQL スキーマはわかりやすくするために編集しており、有効な GraphQL スキーマではない
+
+createNursery(input: {
+  id: ID
+  name: String!
+  babies: ModelNurseryBabyConnectionInput
+  sitters: ModelNurserySitterConnectionInput
+})
+
+updateNursery(input: {
+  id: ID!
+  name: String
+  organizationName: String
+  address: AddressInput
+  phoneNumber: String
+  faxNumber: String
+  planId: String
+  babies: ModelNurseryBabyConnectionInput
+  sitters: ModelNurserySitterConnectionInput
+})
+
+deleteNursery(id: ID)
+
+createBaby(input: {
+  id: ID
+  name: String!
+  kana: String
+  gender: String
+  dateOfBirth: String
+  grade: String
+  sensitibity: Int
+  blood: String
+  motherName: String
+  motherKana: String
+  fatherName: String
+  fatherKana: String
+  tel: [String!]
+  medical: String
+  allergy: String
+  image: S3ObjectInput
+  defaultAvatar: Int
+})
+
+updateBaby(input: {
+  id: ID!
+  name: String!
+  kana: String
+  gender: String
+  dateOfBirth: String
+  grade: String
+  sensitibity: Int
+  blood: String
+  motherName: String
+  motherKana: String
+  fatherName: String
+  fatherKana: String
+  tel: [String!]
+  medical: String
+  allergy: String
+  image: S3ObjectInput
+  defaultAvatar: Int
+  checks: ModelBabyCheckConnectionInput
+  nurseries: ModelNurseryBabyConnectionInput
+  rooms: ModelRoomBabyConnectionInput
+})
+
+deleteBaby(id: ID)
+
+
+deleteNurseryBaby(input: {
+  nurseryId: ID!
+  babyId: ID!
+})
+
+createSitterWithNursery(nurseryId: ID!, input: {
+  id: ID
+  name: String!
+  kana: String
+  gender: String
+  tel: String
+  email: String
+  image: S3ObjectInput
+  defaultAvatar: Int
+})
+
+deleteNurserySitter(input: {
+  nurseryId: ID!
+  sitterId: ID!
+})
+
+createRoom(input: {
+  name: String!
+  nurseryId: ID
+  sitterIds: [ID]
+  babyIds: [ID]
+  roomNurseryId: ID
+})
+
+updateRoom(input: {
+  id: ID!
+  name: String!
+  nurseryId: ID
+  sitterIds: [ID]
+  babyIds: [ID]
+  roomNurseryId: ID
+})
+
+babyWatchStart(babyIds: [ID!]!, nurseryId: ID!)
+
+babyWatchStop(babyIds: [ID!]!, nurseryId: ID!)
+
+createBabyCheck(input: {
+  babyId: ID!
+  time: String!
+  nurseryId: ID
+  sitterId: ID
+  value: String
+  recovered: Boolean
+  isChecked: Boolean
+  hasCoughing: Boolean
+  hasRunnyNose: Boolean
+  hasBlockedNose: Boolean
+  hasWheezing: Boolean
+  hasSnoring: Boolean
+  avoidObstacle: Boolean
+})
+
+createDisableToken(id: String!, email: String)
+
+createSitter(input: {
+  id: ID
+  name: String!
+  kana: String
+  gender: String
+  tel: String
+  email: String
+  image: S3ObjectInput
+  defaultAvatar: Int
+})
+
+updateSitter(input: {
+  id: ID!
+  name: String!
+  kana: String
+  gender: String
+  tel: String
+  email: String
+  image: S3ObjectInput
+  defaultAvatar: Int
+  nurseries: ModelNurserySitterConnectionInput
+  rooms: ModelRoomSitterConnectionInput
+})
+
+updateSitterLogin(id: ID!)
+
+deleteSitter(id: ID)
+
+deleteRoom(id: ID)
+
+createNurseryBaby(input: {
+  nurseryId: ID!
+  babyId: ID!
+  deviceName: String
+})
+
+updateNurseryBaby(input: {
+  nurseryId: ID!
+  babyId: ID!
+  deviceName: String
+})
+
+createNurserySitter(input: {
+  nurseryId: ID!
+  sitterId: ID!
+  admin: Boolean
+})
+
+updateNurserySitter(input: {
+  nurseryId: ID!
+  sitterId: ID!
+})
+
+createRoomBaby(input: CreateRoomBabyInput!)
+
+updateRoomBaby(input: UpdateRoomBabyInput!)
+
+deleteRoomBaby(input: DeleteRoomBabyInput!)
+
+createRoomSitter(input: CreateRoomSitterInput!)
+
+updateRoomSitter(input: UpdateRoomSitterInput!)
+
+deleteRoomSitter(input: DeleteRoomSitterInput!)
+
+createBabyStatus(input: {
+  id: ID
+  status: String
+  updatedAt: AWSDateTime
+  deviceName: String
+  heartRate: Int
+  babyStatusSitterId: ID
+})
+
+updateBabyStatus(input: UpdateBabyStatusInput!)
+
+deleteBabyStatus(input: DeleteBabyStatusInput!)
+
+createSensorPairingLog(input: {
+  nurseryId: ID!
+  babyId: ID!
+  deviceName: String
+})
+
+createSidsSheetVerifiedLog(input: {
+  nurseryId: String!
+  date: String!
+  isVerified: Boolean!
+  approverName: String!
+})
+
+createRoomStatus(input: {
+  clientMutationId: String
+  roomId: ID!
+  date: String!
+  temperature: Int!
+  humidity: Int!
+  sitterId: ID!
+  checkedAt: String!
+})
+
+deleteRoomStatus(input: DeleteRoomStatusInput!)
+
+createBabyDailyStatus(input: {
+  babyId: ID!
+  date: String!
+  condition: String!
+})
+
+updateBabiesGrade(input: UpdateBabiesGradeInput!)
+

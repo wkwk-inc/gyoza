@@ -1,0 +1,57 @@
+
+extend type Baby {
+  currentHealth: CurrentHealth
+}
+
+extend type Mutation {
+  createCurrentHealth(input: CreateCurrentHealthInput!): CreateCurrentHealthPayload
+  updateCurrentHealth(input: UpdateCurrentHealthInput!): UpdateCurrentHealthPayload
+  deleteCurrentHealth(input: DeleteCurrentHealthInput!): DeleteCurrentHealthPayload
+}
+
+type CurrentHealth {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  sensorDeviceId: String
+  isSleeping: Boolean
+  heartRate: Int
+  rssi: Int
+}
+
+input CreateCurrentHealthInput {
+  clientMutationId: String
+  sensorDeviceId: String
+  isSleeping: Boolean
+  heartRate: Int
+  rssi: Int
+}
+
+type CreateCurrentHealthPayload {
+  clientMutationId: String
+  currentHealth: CurrentHealth
+}
+
+input UpdateCurrentHealthInput {
+  clientMutationId: String
+  id: ID!
+  sensorDeviceId: String
+  isSleeping: Boolean
+  heartRate: Int
+  rssi: Int
+}
+
+type UpdateCurrentHealthPayload {
+  clientMutationId: String
+  currentHealth: CurrentHealth
+}
+
+input DeleteCurrentHealthInput {
+  clientMutationId: String
+  id: ID!
+}
+
+type DeleteCurrentHealthPayload {
+  clientMutationId: String
+  currentHealth: CurrentHealth
+}

@@ -1,0 +1,102 @@
+
+extend type Room {
+  condition(
+    id: ID!
+  ): RoomCondition
+  conditions(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: RoomConditionFilter
+    orderBy: RoomConditionOrder
+    includeDeleted: Boolean
+  ): RoomConditionConnection
+}
+
+extend type Mutation {
+  createRoomCondition(input: CreateRoomConditionInput!): CreateRoomConditionPayload
+  updateRoomCondition(input: UpdateRoomConditionInput!): UpdateRoomConditionPayload
+  deleteRoomCondition(input: DeleteRoomConditionInput!): DeleteRoomConditionPayload
+}
+
+type RoomCondition implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  deletedAt: DateTime
+  date: String!
+  temperature: Int!
+  humidity: Int!
+  sitterId: ID!
+  checkedAt: DateTime!
+}
+
+input RoomConditionFilter {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  date: DateTimeFilter
+  temperature: IntFilter
+  humidity: IntFilter
+  sitterId: String
+  checkedAt: DateTimeFilter
+}
+
+input RoomConditionOrder {
+  direction: OrderDirection!
+  field: RoomConditionOrderField!
+}
+
+enum RoomConditionOrderField {
+  Date
+}
+
+type RoomConditionConnection {
+  edges: [RoomConditionEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type RoomConditionEdge {
+  cursor: String!
+  node: RoomCondition!
+}
+
+input CreateRoomConditionInput {
+  clientMutationId: String
+  roomId: ID!
+  date: String!
+  temperature: Int!
+  humidity: Int!
+  sitterId: ID!
+}
+
+type CreateRoomConditionPayload {
+  clientMutationId: String
+  roomCondition: RoomCondition
+}
+
+input UpdateRoomConditionInput {
+  clientMutationId: String
+  id: ID!
+  date: String!
+  temperature: Int!
+  humidity: Int!
+  sitterId: ID!
+}
+
+type UpdateRoomConditionPayload {
+  clientMutationId: String
+  roomCondition: RoomCondition
+}
+
+input DeleteRoomConditionInput {
+  clientMutationId: String
+  id: ID!
+}
+
+type DeleteRoomConditionPayload {
+  clientMutationId: String
+  roomCondition: RoomCondition
+}

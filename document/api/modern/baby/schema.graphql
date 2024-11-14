@@ -1,0 +1,245 @@
+
+extend type Query {
+  baby(
+    id: ID!
+  ): Baby
+  babies(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: BabyFilter
+    orderBy: BabyOrder
+    query: String
+    includeDeleted: Boolean
+  ): BabyConnection!
+}
+
+extend type Nursery {
+  baby(
+    id: ID!
+  ): Baby
+  babies(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: BabyFilter
+    orderBy: BabyOrder
+    query: String
+    includeDeleted: Boolean
+  ): BabyNurseryConnection
+}
+
+extend type Room {
+  babies(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: BabyFilter
+    orderBy: BabyOrder
+    query: String
+    includeDeleted: Boolean
+  ): BabyRoomConnection
+}
+
+extend type Guardian {
+  baby(
+    id: ID!
+  ): Baby
+  babies(
+    first: Int
+    after: String
+    last: Int
+    before: String
+    filterBy: BabyFilter
+    orderBy: BabyOrder
+    query: String
+    includeDeleted: Boolean
+    isAccepted: Boolean
+    isAdmin: Boolean
+  ): BabyGuardianConnection
+}
+
+extend type Mutation {
+  createBaby(input: CreateBabyInput!): CreateBabyPayload
+  updateBaby(input: UpdateBabyInput!): UpdateBabyPayload
+  deleteBaby(input: DeleteBabyInput!): DeleteBabyPayload
+}
+
+type Baby implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  deletedAt: DateTime
+  name: String!
+  phoneticName: String
+  gender: Gender
+  dateOfBirth: Date
+  bloodType: BloodType
+  medicalHistory: String
+  allergy: String
+  profilePicture: File
+  defaultAvatar: Int
+  sensorSensitibity: SensorSensitibity
+  motherName: String
+  motherPhoneticName: String
+  fatherName: String
+  fatherPhoneticName: String
+  phoneNumbers: [String!]
+}
+
+enum SensorSensitibity {
+  Level0
+  Level1
+  Level2
+  Level3
+  Level4
+  Level5
+  Level6
+  Level7
+  Level8
+  Level9
+}
+
+input BabyFilter {
+  createdAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+  name: StringFilter
+  phoneticName: StringFilter
+  gender: Gender
+  dateOfBirth: DateTimeFilter
+  bloodType: BloodType
+  medicalHistory: StringFilter
+  allergy: StringFilter
+  motherName: StringFilter
+  motherPhoneticName: StringFilter
+  fatherName: StringFilter
+  fatherPhoneticName: StringFilter
+  phoneNumbers: StringFilter
+  sensorSensitibity: SensorSensitibity
+}
+
+input BabyOrder {
+  direction: OrderDirection!
+  field: BabyOrderField!
+}
+
+enum BabyOrderField {
+  CreatedAt
+}
+
+type BabyConnection {
+  edges: [BabyEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type BabyEdge {
+  cursor: String!
+  node: Baby!
+}
+
+type BabyNurseryConnection {
+  edges: [BabyNurseryEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type BabyNurseryEdge {
+  cursor: String!
+  node: Baby!
+  deletedAt: DateTime
+  sensorDeviceId: String
+}
+
+type BabyRoomConnection {
+  edges: [BabyRoomEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type BabyRoomEdge {
+  cursor: String!
+  node: Baby!
+  deletedAt: DateTime
+}
+
+type BabyGuardianConnection {
+  edges: [BabyGuardianEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  filteredCount: Int
+}
+
+type BabyGuardianEdge {
+  cursor: String!
+  node: Baby!
+  isAccepted: Boolean
+  isAdmin: Boolean
+  relationship: String
+}
+
+input CreateBabyInput {
+  clientMutationId: String
+  nurseryId: ID!
+  name: String!
+  phoneticName: String
+  gender: Gender
+  dateOfBirth: Date
+  bloodType: BloodType
+  medicalHistory: String
+  allergy: String
+  profilePicture: FileInput
+  defaultAvatar: Int
+  sensorSensitibity: SensorSensitibity
+  motherName: String
+  motherPhoneticName: String
+  fatherName: String
+  fatherPhoneticName: String
+  phoneNumbers: [String!]
+}
+
+type CreateBabyPayload {
+  clientMutationId: String
+  baby: Baby
+}
+
+input UpdateBabyInput {
+  clientMutationId: String
+  id: ID!
+  name: String
+  phoneticName: String
+  gender: Gender
+  dateOfBirth: Date
+  bloodType: BloodType
+  medicalHistory: String
+  allergy: String
+  profilePicture: FileInput
+  defaultAvatar: Int
+  sensorSensitibity: SensorSensitibity
+  motherName: String
+  motherPhoneticName: String
+  fatherName: String
+  fatherPhoneticName: String
+  phoneNumbers: [String!]
+}
+
+type UpdateBabyPayload {
+  clientMutationId: String
+  baby: Baby
+}
+
+input DeleteBabyInput {
+  clientMutationId: String
+  id: ID!
+}
+
+type DeleteBabyPayload {
+  clientMutationId: String
+  baby: Baby
+}

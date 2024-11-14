@@ -1,0 +1,1194 @@
+type Nursery {
+  id: ID!
+  name: String!
+  organizationName: String
+  address: Address
+  phoneNumber: String
+  faxNumber: String
+  planId: String
+  plan: Plan
+  babies(
+    filter: ModelNurseryBabyFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelNurseryBabyConnection
+  sitters(
+    filter: ModelNurserySitterFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelNurserySitterConnection
+  rooms(
+    filter: ModelRoomFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelRoomConnection
+}
+
+type DisableToken @aws_api_key {
+  id: String!
+	code: String
+	email: String
+  createdAt: String
+}
+
+input CreateDisableTokenInput {
+  id: String!
+  email: String
+}
+
+input CheckDisableTokenInput {
+  code: String
+  email: String
+}
+
+type Baby {
+  id: ID!
+  name: String!
+  kana: String
+  gender: String
+  dateOfBirth: String
+  grade: String
+  sensitibity: Int
+  blood: String
+  motherName: String
+  motherKana: String
+  fatherName: String
+  fatherKana: String
+  tel: [String!]
+  medical: String
+  allergy: String
+  image: S3Object
+  defaultAvatar: Int
+  watchStatus: BabyWatchEvent
+  checks(
+    date: AWSDate
+    isOnward: Boolean
+    dateTimeFrom: AWSDateTime
+    dateTimeTo: AWSDateTime
+    includeDeleted: Boolean
+    filter: ModelBabyCheckFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelBabyCheckConnection
+  latestCheck: BabyCheck
+  dailyStatus(date: AWSDate): BabyDailyStatus
+  nurseries(
+    filter: ModelNurseryBabyFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelNurseryBabyConnection
+  rooms(
+    filter: ModelRoomBabyFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelRoomBabyConnection
+  users(
+    filter: ModelUserBabyFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelUserBabyConnection
+}
+
+type Sitter {
+  id: ID!
+  name: String!
+  kana: String
+  gender: String
+  tel: String
+  email: String
+  image: S3Object
+  defaultAvatar: Int
+  lastLogin: AWSDateTime
+  nurseries(
+    filter: ModelNurserySitterFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelNurserySitterConnection
+  rooms(
+    filter: ModelRoomSitterFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelRoomSitterConnection
+}
+
+type User {
+  id: ID!
+  name: String!
+  kana: String
+  activeBabyId: ID
+  image: S3Object
+  defaultAvatar: Int
+  babies(
+    filter: ModelUserBabyFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelUserBabyConnection
+}
+
+type Room {
+  id: ID!
+  name: String!
+  nursery: Nursery
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  deletedAt: String
+  sitters(
+    filter: ModelRoomSitterFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelRoomSitterConnection
+  babies(
+    filter: ModelRoomBabyFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelRoomBabyConnection
+  roomStatuses: [RoomStatus]
+}
+
+type BabyStatus @aws_iam @aws_cognito_user_pools {
+  id: ID!
+  status: String
+  updatedAt: AWSDateTime
+  deviceName: String
+  rssi: Int
+  heartRate: Int
+  sitterId: ID
+  sitter: Sitter
+}
+
+type BabyWatchEvent {
+  babyId: ID!
+  createdAt: AWSDateTime!
+  type: String
+}
+
+type BabySummary {
+  babyId: ID!
+  date: AWSDate!
+  inProgress: Boolean
+  feeling: Int
+  temperature: Float
+}
+
+type BabyCheck {
+  babyId: ID!
+  time: String!
+  createdAt: String!
+  nurseryId: ID
+  sitterId: ID
+  value: String
+  recovered: Boolean
+  baby: Baby
+  sitter: Sitter
+  isChecked: Boolean
+  hasCoughing: Boolean
+  hasRunnyNose: Boolean
+  hasBlockedNose: Boolean
+  hasWheezing: Boolean
+  hasSnoring: Boolean
+  avoidObstacle: Boolean
+}
+
+type Plan {
+  id: ID!
+  name: String!
+  sidsTable: Boolean
+  stamp: Boolean
+  api: Boolean
+  sensorDevice: Boolean
+  monthlyFee: Int
+}
+
+input ModelBabyCheckFilterInput {
+  babyId: ModelIDFilterInput
+  time: ModelStringFilterInput
+  createdAt: ModelStringFilterInput
+  value: ModelStringFilterInput
+  and: [ModelBabyCheckFilterInput]
+  or: [ModelBabyCheckFilterInput]
+  not: ModelBabyCheckFilterInput
+}
+
+type ModelBabyCheckConnection {
+  items: [BabyCheck]
+  nextToken: String
+}
+
+type ModelBabyWatchEventConnection {
+  items: [BabyWatchEvent]
+  nextToken: String
+}
+
+type NurseryBaby {
+  nurseryId: ID!
+  babyId: ID!
+  nursery: Nursery
+  baby: Baby
+  deviceName: String
+}
+
+input ModelNurseryBabyFilterInput {
+  nurseryId: ModelIDFilterInput
+  babyId: ModelIDFilterInput
+  deviceName: ModelStringFilterInput
+  includeDeleted: Boolean
+  and: [ModelNurseryBabyFilterInput]
+  or: [ModelNurseryBabyFilterInput]
+  not: ModelNurseryBabyFilterInput
+}
+
+type ModelNurseryBabyConnection {
+  items: [NurseryBaby]
+  nextToken: String
+}
+
+type NurserySitter {
+  nurseryId: ID!
+  sitterId: ID!
+  nursery: Nursery
+  sitter: Sitter
+  admin: Boolean
+}
+
+input ModelNurserySitterFilterInput {
+  nurseryId: ModelIDFilterInput
+  sitterId: ModelIDFilterInput
+  includeDeleted: Boolean
+  and: [ModelNurserySitterFilterInput]
+  or: [ModelNurserySitterFilterInput]
+  not: ModelNurserySitterFilterInput
+}
+
+type ModelNurserySitterConnection {
+  items: [NurserySitter]
+  nextToken: String
+}
+
+type RoomBaby {
+  roomId: ID!
+  babyId: ID!
+  deletedAt: String
+  room: Room
+  baby: Baby
+}
+
+input ModelRoomBabyFilterInput {
+  roomId: ModelIDFilterInput
+  babyId: ModelIDFilterInput
+  includeDeleted: Boolean
+  and: [ModelRoomBabyFilterInput]
+  or: [ModelRoomBabyFilterInput]
+  not: ModelRoomBabyFilterInput
+}
+
+type ModelRoomBabyConnection {
+  items: [RoomBaby]
+  nextToken: String
+}
+
+type RoomSitter {
+  roomId: ID!
+  sitterId: ID!
+  room: Room
+  sitter: Sitter
+}
+
+input ModelRoomSitterFilterInput {
+  roomId: ModelIDFilterInput
+  sitterId: ModelIDFilterInput
+  and: [ModelRoomSitterFilterInput]
+  or: [ModelRoomSitterFilterInput]
+  not: ModelRoomSitterFilterInput
+}
+
+type ModelRoomSitterConnection {
+  items: [RoomSitter]
+  nextToken: String
+}
+
+type UserBaby {
+  userId: ID!
+  babyId: ID!
+  user: User
+  baby: Baby
+  relation: String
+  accepted: Boolean
+  admin: Boolean
+}
+
+input ModelUserBabyFilterInput {
+  userId: ModelIDFilterInput
+  babyId: ModelIDFilterInput
+  and: [ModelUserBabyFilterInput]
+  or: [ModelUserBabyFilterInput]
+  not: ModelUserBabyFilterInput
+}
+
+type ModelUserBabyConnection {
+  items: [UserBaby]
+  nextToken: String
+}
+
+type S3Object {
+  region: String!
+  bucket: String!
+  key: String!
+}
+
+input S3ObjectInput {
+  region: String!
+  bucket: String!
+  key: String!
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+input ModelIDFilterInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  in: [ID]
+}
+
+input ModelStringFilterInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+}
+
+input CreateBabyInput {
+  id: ID
+  name: String!
+  kana: String
+  gender: String
+  dateOfBirth: String
+  grade: String
+  sensitibity: Int
+  blood: String
+  motherName: String
+  motherKana: String
+  fatherName: String
+  fatherKana: String
+  tel: [String!]
+  medical: String
+  allergy: String
+  image: S3ObjectInput
+  defaultAvatar: Int
+}
+
+input DeleteNurseryBabyInput {
+  nurseryId: ID!
+  babyId: ID!
+}
+
+input CreateSitterInput {
+  id: ID
+  name: String!
+  kana: String
+  gender: String
+  tel: String
+  email: String
+  image: S3ObjectInput
+  defaultAvatar: Int
+}
+
+input DeleteNurserySitterInput {
+  nurseryId: ID!
+  sitterId: ID!
+}
+
+input CreateRoomInput {
+  name: String!
+  nurseryId: ID
+  sitterIds: [ID]
+  babyIds: [ID]
+  roomNurseryId: ID
+}
+
+input UpdateRoomInput {
+  id: ID!
+  name: String!
+  nurseryId: ID
+  sitterIds: [ID]
+  babyIds: [ID]
+  roomNurseryId: ID
+}
+
+input CreateBabyCheckInput {
+  babyId: ID!
+  time: String!
+  nurseryId: ID
+  sitterId: ID
+  value: String
+  recovered: Boolean
+  isChecked: Boolean
+  hasCoughing: Boolean
+  hasRunnyNose: Boolean
+  hasBlockedNose: Boolean
+  hasWheezing: Boolean
+  hasSnoring: Boolean
+  avoidObstacle: Boolean
+}
+
+type CreateBabyChecksResult {
+  items: [BabyCheck!]!
+}
+
+type BabyWatchMutationResult {
+  items: [Baby!]!
+  nextToken: String
+}
+
+type RoomStatus {
+  roomId: ID!
+  sitterId: ID!
+  date: String!
+  temperature: Int!
+  humidity: Int!
+  checkedAt: String!
+  createdAt: String
+  updatedAt: String
+}
+
+input CreateRoomStatusInput {
+  clientMutationId: String
+  roomId: ID!
+  date: String!
+  temperature: Int!
+  humidity: Int!
+  sitterId: ID!
+  checkedAt: String!
+}
+
+type CreateRoomStatusPayload {
+  clientMutationId: String
+  roomStatus: RoomStatus
+}
+
+input DeleteRoomStatusInput {
+  clientMutationId: String
+  roomId: ID!
+  date: String!
+}
+
+type DeleteRoomStatusPayload {
+  clientMutationId: String
+  roomId: ID!
+  date: String!
+}
+
+type Query {
+  getCurrentBabyCheck(babyId: ID!, time: String!): BabyCheck
+  getNursery(id: ID!): Nursery
+  listNurserys(
+    filter: ModelNurseryFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelNurseryConnection
+  checkDisableToken(input: CheckDisableTokenInput!): DisableToken
+  @aws_api_key
+  getBaby(id: ID!): Baby
+  listBabys(
+    filter: ModelBabyFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelBabyConnection
+  babies(ids: [ID!]): [Baby!]!
+  getSitter(id: ID!): Sitter
+  listSitters(
+    filter: ModelSitterFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelSitterConnection
+  getUser(id: ID!): User
+  listUsers(
+    filter: ModelUserFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelUserConnection
+  getRoom(id: ID!): Room
+  listRooms(
+    filter: ModelRoomFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelRoomConnection
+  listBabySummaries(
+    babyId: ID!
+    from: AWSDateTime!
+    to: AWSDateTime!
+  ): ModelBabySummaryConnection
+  getBabyCheck(babyId: ID!, time: String!, createdAt: String!): BabyCheck
+  listBabyChecks(
+    babyId: ID
+    timeCreatedAt: ModelBabyCheckPrimaryCompositeKeyConditionInput
+    filter: ModelBabyCheckFilterInput
+    limit: Int
+    nextToken: String
+    sortDirection: ModelSortDirection
+  ): ModelBabyCheckConnection
+  getUserBaby(userId: ID!, babyId: ID!): UserBaby
+  getBabyStatus(id: ID!): BabyStatus @aws_iam @aws_cognito_user_pools
+  listBabyStatuss(
+    filter: ModelBabyStatusFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelBabyStatusConnection @aws_iam @aws_cognito_user_pools
+  listBabyWatchEvents(
+    babyId: ID!
+    from: AWSDateTime!
+    to: AWSDateTime!
+    limit: Int
+    nextToken: String
+    sortDirection: ModelSortDirection
+  ): ModelBabyWatchEventConnection
+  listSidsCheckUsageLogs(
+    nurseryId: ID!
+    from: AWSDateTime!
+    to: AWSDateTime!
+    limit: Int
+    nextToken: String
+    sortDirection: ModelSortDirection
+  ): ModelSidsCheckUsageLogsConnection
+  listSensorPairingLogs(
+    nurseryId: ID!
+    from: AWSDateTime
+    to: AWSDateTime
+    limit: Int
+    nextToken: String
+    sortDirection: ModelSortDirection
+  ): ModelSensorPairingLogConnection
+  getSidsSheetVerifiedLog(nurseryId: String!, date: String!): SidsSheetVerifiedLog
+  getBabyDailyStatuses(babyId: String!, dateFrom: AWSDate!, dateTo: AWSDate!): [BabyDailyStatus]
+}
+
+type Mutation {
+  createBabyWithNursery(nurseryId: ID!, input: CreateBabyInput!): Baby
+  createBabyWithUser(userId: ID!, input: CreateBabyInput!): Baby
+  deleteNurseryBaby(input: DeleteNurseryBabyInput!): NurseryBaby
+  createSitterWithNursery(nurseryId: ID!, input: CreateSitterInput!): Sitter
+  deleteNurserySitter(input: DeleteNurserySitterInput!): NurserySitter
+  createRoom(input: CreateRoomInput!): Room
+  updateRoom(input: UpdateRoomInput!): Room
+  babyWatchStart(babyIds: [ID!]!, nurseryId: ID!): BabyWatchMutationResult
+  babyWatchStop(babyIds: [ID!]!, nurseryId: ID!): BabyWatchMutationResult
+  createBabyCheck(input: CreateBabyCheckInput!): BabyCheck
+  createBabyChecks(input: [CreateBabyCheckInput!]!): CreateBabyChecksResult
+  createNursery(input: CreateNurseryInput!): Nursery
+  updateNursery(input: UpdateNurseryInput!): Nursery
+  deleteNursery(input: DeleteNurseryInput!): Nursery
+  createBaby(input: CreateBabyInput!): Baby
+  updateBaby(input: UpdateBabyInput!): Baby
+  deleteBaby(input: DeleteBabyInput!): Baby
+  createDisableToken(input: CreateDisableTokenInput!): DisableToken
+  @aws_api_key
+  createSitter(input: CreateSitterInput!): Sitter
+  updateSitter(input: UpdateSitterInput!): Sitter
+  updateSitterLogin(id: ID!): Sitter
+  deleteSitter(input: DeleteSitterInput!): Sitter
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  deleteUser(input: DeleteUserInput!): User
+  deleteRoom(input: DeleteRoomInput!): Room
+  createNurseryBaby(input: CreateNurseryBabyInput!): NurseryBaby
+  updateNurseryBaby(input: UpdateNurseryBabyInput!): NurseryBaby
+  createNurserySitter(input: CreateNurserySitterInput!): NurserySitter
+  updateNurserySitter(input: UpdateNurserySitterInput!): NurserySitter
+  createRoomBaby(input: CreateRoomBabyInput!): RoomBaby
+  updateRoomBaby(input: UpdateRoomBabyInput!): RoomBaby
+  deleteRoomBaby(input: DeleteRoomBabyInput!): RoomBaby
+  createRoomSitter(input: CreateRoomSitterInput!): RoomSitter
+  updateRoomSitter(input: UpdateRoomSitterInput!): RoomSitter
+  deleteRoomSitter(input: DeleteRoomSitterInput!): RoomSitter
+  createUserBaby(input: CreateUserBabyInput!): UserBaby
+  updateUserBaby(input: UpdateUserBabyInput!): UserBaby
+  deleteUserBaby(input: DeleteUserBabyInput!): UserBaby
+  createBabyStatus(input: CreateBabyStatusInput!): BabyStatus
+    @aws_iam
+    @aws_cognito_user_pools
+  updateBabyStatus(input: UpdateBabyStatusInput!): BabyStatus
+    @aws_iam
+    @aws_cognito_user_pools
+  deleteBabyStatus(input: DeleteBabyStatusInput!): BabyStatus
+    @aws_iam
+    @aws_cognito_user_pools
+  createSensorPairingLog(input: CreateSensorPairingLogInput!): SensorPairingLog
+  createSidsSheetVerifiedLog(input: CreateSidsSheetVerifiedLogInput!): SidsSheetVerifiedLog
+  createRoomStatus(input: CreateRoomStatusInput!): CreateRoomStatusPayload
+  deleteRoomStatus(input: DeleteRoomStatusInput!): DeleteRoomStatusPayload
+  createBabyDailyStatus(input: BabyDailyStatusInput!): BabyDailyStatus
+  updateBabiesGrade(input: UpdateBabiesGradeInput!): UpdateBabiesGradePayload
+}
+
+input UpdateBabiesGradeInput {
+  clientMutationId: String
+  nurseryId: ID!
+}
+
+type UpdateBabiesGradePayload {
+  clientMutationId: String
+  babies: [Baby!]!
+}
+
+type Subscription {
+  onUpdateBabyStatusWithId(id: ID!): BabyStatus
+    @aws_subscribe(mutations: ["updateBabyStatus"])
+  onCreateNursery: Nursery @aws_subscribe(mutations: ["createNursery"])
+  onUpdateNursery: Nursery @aws_subscribe(mutations: ["updateNursery"])
+  onDeleteNursery: Nursery @aws_subscribe(mutations: ["deleteNursery"])
+  onCreateBaby: Baby @aws_subscribe(mutations: ["createBaby"])
+  onUpdateBaby: Baby @aws_subscribe(mutations: ["updateBaby"])
+  onDeleteBaby: Baby @aws_subscribe(mutations: ["deleteBaby"])
+  onCreateSitter: Sitter @aws_subscribe(mutations: ["createSitter"])
+  onUpdateSitter: Sitter @aws_subscribe(mutations: ["updateSitter"])
+  onDeleteSitter: Sitter @aws_subscribe(mutations: ["deleteSitter"])
+  onCreateUser: User @aws_subscribe(mutations: ["createUser"])
+  onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
+  onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
+  onDeleteRoom: Room @aws_subscribe(mutations: ["deleteRoom"])
+  onCreateNurseryBaby: NurseryBaby
+    @aws_subscribe(mutations: ["createNurseryBaby"])
+  onUpdateNurseryBaby: NurseryBaby
+    @aws_subscribe(mutations: ["updateNurseryBaby"])
+  onCreateNurserySitter: NurserySitter
+    @aws_subscribe(mutations: ["createNurserySitter"])
+  onUpdateNurserySitter: NurserySitter
+    @aws_subscribe(mutations: ["updateNurserySitter"])
+  onCreateRoomBaby: RoomBaby @aws_subscribe(mutations: ["createRoomBaby"])
+  onUpdateRoomBaby: RoomBaby @aws_subscribe(mutations: ["updateRoomBaby"])
+  onDeleteRoomBaby: RoomBaby @aws_subscribe(mutations: ["deleteRoomBaby"])
+  onCreateRoomSitter: RoomSitter @aws_subscribe(mutations: ["createRoomSitter"])
+  onUpdateRoomSitter: RoomSitter @aws_subscribe(mutations: ["updateRoomSitter"])
+  onDeleteRoomSitter: RoomSitter @aws_subscribe(mutations: ["deleteRoomSitter"])
+  onCreateUserBaby: UserBaby @aws_subscribe(mutations: ["createUserBaby"])
+  onUpdateUserBaby: UserBaby @aws_subscribe(mutations: ["updateUserBaby"])
+  onDeleteUserBaby: UserBaby @aws_subscribe(mutations: ["deleteUserBaby"])
+  onCreateBabyStatus: BabyStatus
+    @aws_subscribe(mutations: ["createBabyStatus"])
+    @aws_iam
+    @aws_cognito_user_pools
+  onUpdateBabyStatus: BabyStatus
+    @aws_subscribe(mutations: ["updateBabyStatus"])
+    @aws_iam
+    @aws_cognito_user_pools
+  onDeleteBabyStatus: BabyStatus
+    @aws_subscribe(mutations: ["deleteBabyStatus"])
+    @aws_iam
+    @aws_cognito_user_pools
+}
+
+input ModelNurseryBabyConnectionInput {
+  nextToken: String
+}
+
+input ModelNurserySitterConnectionInput {
+  nextToken: String
+}
+
+type ModelNurseryConnection {
+  items: [Nursery]
+  nextToken: String
+}
+
+input ModelIntFilterInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  contains: Int
+  notContains: Int
+  between: [Int]
+}
+
+input ModelFloatFilterInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  contains: Float
+  notContains: Float
+  between: [Float]
+}
+
+input ModelBooleanFilterInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelNurseryFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  and: [ModelNurseryFilterInput]
+  or: [ModelNurseryFilterInput]
+  not: ModelNurseryFilterInput
+}
+
+input CreateNurseryInput {
+  id: ID
+  name: String!
+  planId: String
+  babies: ModelNurseryBabyConnectionInput
+  sitters: ModelNurserySitterConnectionInput
+}
+
+input UpdateNurseryInput {
+  id: ID!
+  name: String
+  organizationName: String
+  address: AddressInput
+  phoneNumber: String
+  faxNumber: String
+  planId: String
+  babies: ModelNurseryBabyConnectionInput
+  sitters: ModelNurserySitterConnectionInput
+}
+
+input AddressInput {
+  country: String
+  postalCode: String
+  prefecture: String
+  city: String
+  addressLine1: String
+  addressLine2: String
+}
+
+input DeleteNurseryInput {
+  id: ID
+}
+
+input ModelBabyCheckConnectionInput {
+  nextToken: String
+}
+
+input ModelRoomBabyConnectionInput {
+  nextToken: String
+}
+
+input ModelUserBabyConnectionInput {
+  nextToken: String
+}
+
+type ModelBabyConnection {
+  items: [Baby]
+  nextToken: String
+}
+
+input ModelBabyFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  kana: ModelStringFilterInput
+  gender: ModelStringFilterInput
+  dateOfBirth: ModelStringFilterInput
+  blood: ModelStringFilterInput
+  motherName: ModelStringFilterInput
+  motherKana: ModelStringFilterInput
+  fatherName: ModelStringFilterInput
+  fatherKana: ModelStringFilterInput
+  tel: ModelStringFilterInput
+  medical: ModelStringFilterInput
+  allergy: ModelStringFilterInput
+  defaultAvatar: ModelIntFilterInput
+  and: [ModelBabyFilterInput]
+  or: [ModelBabyFilterInput]
+  not: ModelBabyFilterInput
+}
+
+input UpdateBabyInput {
+  id: ID!
+  name: String!
+  kana: String
+  gender: String
+  dateOfBirth: String
+  grade: String
+  sensitibity: Int
+  blood: String
+  motherName: String
+  motherKana: String
+  fatherName: String
+  fatherKana: String
+  tel: [String!]
+  medical: String
+  allergy: String
+  image: S3ObjectInput
+  defaultAvatar: Int
+  checks: ModelBabyCheckConnectionInput
+  nurseries: ModelNurseryBabyConnectionInput
+  rooms: ModelRoomBabyConnectionInput
+  users: ModelUserBabyConnectionInput
+}
+
+input DeleteBabyInput {
+  id: ID
+}
+
+input ModelRoomSitterConnectionInput {
+  nextToken: String
+}
+
+type ModelSitterConnection {
+  items: [Sitter]
+  nextToken: String
+}
+
+input ModelSitterFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  kana: ModelStringFilterInput
+  gender: ModelStringFilterInput
+  tel: ModelStringFilterInput
+  email: ModelStringFilterInput
+  defaultAvatar: ModelIntFilterInput
+  and: [ModelSitterFilterInput]
+  or: [ModelSitterFilterInput]
+  not: ModelSitterFilterInput
+}
+
+input UpdateSitterInput {
+  id: ID!
+  name: String!
+  kana: String
+  gender: String
+  tel: String
+  email: String
+  image: S3ObjectInput
+  defaultAvatar: Int
+  nurseries: ModelNurserySitterConnectionInput
+  rooms: ModelRoomSitterConnectionInput
+}
+
+input DeleteSitterInput {
+  id: ID
+}
+
+type ModelUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input ModelUserFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  activeBabyId: ModelIDFilterInput
+  defaultAvatar: ModelIntFilterInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+input CreateUserInput {
+  id: ID
+  name: String!
+  kana: String
+  activeBabyId: ID
+  image: S3ObjectInput
+  defaultAvatar: Int
+  babies: ModelUserBabyConnectionInput
+}
+
+input UpdateUserInput {
+  id: ID!
+  name: String
+  kana: String
+  activeBabyId: ID
+  image: S3ObjectInput
+  defaultAvatar: Int
+  babies: ModelUserBabyConnectionInput
+}
+
+input DeleteUserInput {
+  id: ID
+}
+
+type ModelRoomConnection {
+  items: [Room]
+  nextToken: String
+}
+
+input ModelRoomFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  includeDeleted: Boolean
+  and: [ModelRoomFilterInput]
+  or: [ModelRoomFilterInput]
+  not: ModelRoomFilterInput
+}
+
+input DeleteRoomInput {
+  id: ID
+}
+
+type ModelBabyStatusConnection @aws_iam @aws_cognito_user_pools {
+  items: [BabyStatus]
+  nextToken: String
+}
+
+input ModelBabyStatusFilterInput {
+  id: ModelIDFilterInput
+  status: ModelStringFilterInput
+  updatedAt: ModelStringFilterInput
+  deviceName: ModelStringFilterInput
+  heartRate: ModelIntFilterInput
+  and: [ModelBabyStatusFilterInput]
+  or: [ModelBabyStatusFilterInput]
+  not: ModelBabyStatusFilterInput
+}
+
+input CreateBabyStatusInput {
+  id: ID
+  status: String
+  updatedAt: AWSDateTime
+  deviceName: String
+  heartRate: Int
+  babyStatusSitterId: ID
+}
+
+input UpdateBabyStatusInput {
+  id: ID!
+  status: String
+  updatedAt: AWSDateTime
+  deviceName: String
+  heartRate: Int
+  babyStatusSitterId: ID
+}
+
+input DeleteBabyStatusInput {
+  id: ID
+}
+
+input ModelBabyWatchEventFilterInput {
+  babyId: ModelIDFilterInput
+  createdAt: ModelStringFilterInput
+  type: ModelStringFilterInput
+  and: [ModelBabyWatchEventFilterInput]
+  or: [ModelBabyWatchEventFilterInput]
+  not: ModelBabyWatchEventFilterInput
+}
+
+type ModelBabySummaryConnection {
+  items: [BabySummary]
+  nextToken: String
+}
+
+input ModelBabySummaryFilterInput {
+  babyId: ModelIDFilterInput
+  date: ModelStringFilterInput
+  inProgress: ModelBooleanFilterInput
+  feeling: ModelIntFilterInput
+  temperature: ModelFloatFilterInput
+  and: [ModelBabySummaryFilterInput]
+  or: [ModelBabySummaryFilterInput]
+  not: ModelBabySummaryFilterInput
+}
+
+input CreateNurseryBabyInput {
+  nurseryId: ID!
+  babyId: ID!
+  deviceName: String
+}
+
+input UpdateNurseryBabyInput {
+  nurseryId: ID!
+  babyId: ID!
+  deviceName: String
+}
+
+input CreateNurserySitterInput {
+  nurseryId: ID!
+  sitterId: ID!
+  admin: Boolean
+}
+
+input UpdateNurserySitterInput {
+  nurseryId: ID!
+  sitterId: ID!
+}
+
+input CreateRoomBabyInput {
+  roomId: ID!
+  babyId: ID!
+}
+
+input UpdateRoomBabyInput {
+  roomId: ID!
+  babyId: ID!
+}
+
+input DeleteRoomBabyInput {
+  roomId: ID!
+  babyId: ID!
+}
+
+input CreateRoomSitterInput {
+  roomId: ID!
+  sitterId: ID!
+}
+
+input UpdateRoomSitterInput {
+  roomId: ID!
+  sitterId: ID!
+}
+
+input DeleteRoomSitterInput {
+  roomId: ID!
+  sitterId: ID!
+}
+
+input CreateUserBabyInput {
+  userId: ID!
+  babyId: ID!
+  relation: String
+  accepted: Boolean
+  admin: Boolean
+}
+
+input UpdateUserBabyInput {
+  userId: ID!
+  babyId: ID!
+  relation: String
+  accepted: Boolean
+  admin: Boolean
+}
+
+input DeleteUserBabyInput {
+  userId: ID!
+  babyId: ID!
+}
+
+input ModelStringKeyConditionInput {
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  between: [String]
+  beginsWith: String
+}
+
+input ModelBabyCheckPrimaryCompositeKeyConditionInput {
+  eq: ModelBabyCheckPrimaryCompositeKeyInput
+  le: ModelBabyCheckPrimaryCompositeKeyInput
+  lt: ModelBabyCheckPrimaryCompositeKeyInput
+  ge: ModelBabyCheckPrimaryCompositeKeyInput
+  gt: ModelBabyCheckPrimaryCompositeKeyInput
+  between: [ModelBabyCheckPrimaryCompositeKeyInput]
+  beginsWith: ModelBabyCheckPrimaryCompositeKeyInput
+}
+
+input ModelBabyCheckPrimaryCompositeKeyInput {
+  time: String
+  createdAt: String
+}
+
+input ModelIDKeyConditionInput {
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  between: [ID]
+  beginsWith: ID
+}
+
+type SidsCheckUsageLog {
+  babyId: ID!
+  baby: Baby
+  nurseryId: String
+  type: String
+  createdAt: AWSDateTime!
+}
+
+type ModelSidsCheckUsageLogsConnection {
+  items: [SidsCheckUsageLog]
+  nextToken: String
+}
+
+type SensorPairingLog {
+  nurseryId: ID!
+  createdAt: String!
+  babyId: ID!
+  baby: Baby
+  deviceName: String
+}
+
+type ModelSensorPairingLogConnection {
+  items: [SensorPairingLog]
+  nextToken: String
+}
+
+input CreateSensorPairingLogInput {
+  nurseryId: ID!
+  babyId: ID!
+  deviceName: String
+}
+
+type Address {
+  country: String
+  postalCode: String
+  prefecture: String
+  city: String
+  addressLine1: String
+  addressLine2: String
+}
+
+# SidsSheetVerifiedLog
+
+type SidsSheetVerifiedLog {
+  id: ID!
+  nurseryId: String!
+  date: String!
+  isVerified: Boolean!
+  approverName: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+input CreateSidsSheetVerifiedLogInput {
+  nurseryId: String!
+  date: String!
+  isVerified: Boolean!
+  approverName: String!
+}
+
+type BabyDailyStatus {
+  babyId: ID!
+  date: String!
+  condition: String!
+}
+
+input BabyDailyStatusInput {
+  babyId: ID!
+  date: String!
+  condition: String!
+}

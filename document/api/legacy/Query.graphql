@@ -1,0 +1,349 @@
+// この GraphQL スキーマはわかりやすくするために編集しており、有効な GraphQL スキーマではない
+
+// 読み方
+クエリー名 (引数): {
+  返り値
+}
+
+// 指定の保育所の情報
+getNursery(id: ID!): {
+  id: ID!
+  name: String!
+  organizationName: String
+  address: Address
+  phoneNumber: String
+  faxNumber: String
+  babies: [Baby] // 所属の園児一覧
+  sitters: [Sitter] // 所属の保育士一覧
+  rooms: [Room] // 存在するルーム一覧
+}
+
+// icuco に登録されている保育所の一覧
+listNurserys(): [
+  {
+    id: ID!
+    name: String!
+    organizationName: String
+    address: Address
+    phoneNumber: String
+    faxNumber: String
+    babies: [Baby]
+    sitters: [Sitter]
+    rooms: [Room]
+  }
+]
+
+// 退会後の復活用コード認証
+checkDisableToken(code: String!, email: String!): {
+  id: String!
+	code: String
+	email: String
+  createdAt: String
+}
+
+// 指定の園児の情報
+getBaby(id: ID!): {
+  id: ID!
+  name: String!
+  kana: String
+  gender: String
+  dateOfBirth: String
+  grade: String
+  sensitibity: Int
+  blood: String
+  motherName: String
+  motherKana: String
+  fatherName: String
+  fatherKana: String
+  tel: [String!]
+  medical: String
+  allergy: String
+  image: S3Object
+  defaultAvatar: Int
+  watchStatus: BabyWatchEvent
+  checks(
+    date: AWSDate
+    isOnward: Boolean
+    dateTimeFrom: AWSDateTime
+    dateTimeTo: AWSDateTime
+    includeDeleted: Boolean
+  ): ModelBabyCheckConnection
+  latestCheck: BabyCheck
+  dailyStatus(date: AWSDate): BabyDailyStatus
+  nurseries: [Nursery]
+  rooms: [Room]
+}
+
+// icuco に登録されている園児一覧 (保育所関係なく baby テーブルをそのままダンプする感じ)
+listBabys(): [
+  {
+    id: ID!
+    name: String!
+    kana: String
+    gender: String
+    dateOfBirth: String
+    grade: String
+    sensitibity: Int
+    blood: String
+    motherName: String
+    motherKana: String
+    fatherName: String
+    fatherKana: String
+    tel: [String!]
+    medical: String
+    allergy: String
+    image: S3Object
+    defaultAvatar: Int
+    watchStatus: BabyWatchEvent
+    checks(
+      date: AWSDate
+      isOnward: Boolean
+      dateTimeFrom: AWSDateTime
+      dateTimeTo: AWSDateTime
+      includeDeleted: Boolean
+    ): ModelBabyCheckConnection
+    latestCheck: BabyCheck
+    dailyStatus(date: AWSDate): BabyDailyStatus
+    nurseries: [Nursery]
+    rooms: [Room]
+  }
+]
+
+// 複数指定の園児一覧 (保育所関係なく baby テーブルから抜いてくる)
+babies(ids: [ID!]): [
+  {
+    id: ID!
+    name: String!
+    kana: String
+    gender: String
+    dateOfBirth: String
+    grade: String
+    sensitibity: Int
+    blood: String
+    motherName: String
+    motherKana: String
+    fatherName: String
+    fatherKana: String
+    tel: [String!]
+    medical: String
+    allergy: String
+    image: S3Object
+    defaultAvatar: Int
+    watchStatus: BabyWatchEvent
+    checks(
+      date: AWSDate
+      isOnward: Boolean
+      dateTimeFrom: AWSDateTime
+      dateTimeTo: AWSDateTime
+      includeDeleted: Boolean
+    ): ModelBabyCheckConnection
+    latestCheck: BabyCheck
+    dailyStatus(date: AWSDate): BabyDailyStatus
+    nurseries: [Nursery]
+    rooms: [Room]
+  }
+]
+
+// 指定の保育士情報
+getSitter(id: ID!): {
+  id: ID!
+  name: String!
+  kana: String
+  gender: String
+  tel: String
+  email: String
+  image: S3Object
+  defaultAvatar: Int
+  lastLogin: AWSDateTime
+  nurseries: [Nursery]
+  rooms: [Room]
+}
+
+// icuco に登録されている保育士一覧 (保育所関係なく sitter テーブルをそのままダンプする感じ)
+listSitters(): [
+  {
+    id: ID!
+    name: String!
+    kana: String
+    gender: String
+    tel: String
+    email: String
+    image: S3Object
+    defaultAvatar: Int
+    lastLogin: AWSDateTime
+    nurseries: [Nursery]
+    rooms: [Room]
+  }
+]
+
+// 指定のルーム情報
+getRoom(id: ID!): {
+  id: ID!
+  name: String!
+  nursery: Nursery
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  deletedAt: String
+  sitters: [Sitter]
+  babies: [Baby]
+  roomStatuses: [RoomStatus]
+}
+
+// icuco に登録されているルーム一覧 (保育所関係なく sitter テーブルをそのままダンプする感じ)
+listRooms(): [
+  {
+    id: ID!
+    name: String!
+    nursery: Nursery
+    createdAt: AWSDateTime!
+    updatedAt: AWSDateTime!
+    deletedAt: String
+    sitters: [Sitter]
+    babies: [Baby]
+    roomStatuses: [RoomStatus]
+  }
+]
+
+// [遺物] 園児のリアルタイム体温
+listBabySummaries(
+  babyId: ID!
+  from: AWSDateTime!
+  to: AWSDateTime!
+): {
+  babyId: ID!
+  date: AWSDate!
+  inProgress: Boolean
+  feeling: Int
+  temperature: Float
+}
+
+// 指定の園児と時刻の午睡チェック記録
+getBabyCheck(babyId: ID!, time: String!, createdAt: String!): {
+  babyId: ID!
+  time: String!
+  createdAt: String!
+  nurseryId: ID
+  sitterId: ID
+  value: String
+  recovered: Boolean
+  baby: Baby
+  sitter: Sitter
+  isChecked: Boolean
+  hasCoughing: Boolean
+  hasRunnyNose: Boolean
+  hasBlockedNose: Boolean
+  hasWheezing: Boolean
+  hasSnoring: Boolean
+  avoidObstacle: Boolean
+}
+
+listBabyChecks(
+  babyId: ID
+  timeCreatedAt: ModelBabyCheckPrimaryCompositeKeyConditionInput
+  sortDirection: ModelSortDirection
+): [
+  {
+    babyId: ID!
+    time: String!
+    createdAt: String!
+    nurseryId: ID
+    sitterId: ID
+    value: String
+    recovered: Boolean
+    baby: Baby
+    sitter: Sitter
+    isChecked: Boolean
+    hasCoughing: Boolean
+    hasRunnyNose: Boolean
+    hasBlockedNose: Boolean
+    hasWheezing: Boolean
+    hasSnoring: Boolean
+    avoidObstacle: Boolean
+  }
+]
+
+// 指定の園児の自由記録の体調メモ
+getBabyDailyStatuses(babyId: String!, dateFrom: AWSDate!, dateTo: AWSDate!): [
+  {
+    babyId: ID!
+    date: String!
+    condition: String!
+  }
+]
+
+// 指定の園児が午睡チェック中かどうか
+listBabyWatchEvents(
+  babyId: ID!
+  from: AWSDateTime!
+  to: AWSDateTime!
+  sortDirection: ModelSortDirection
+): {
+  babyId: ID!
+  createdAt: AWSDateTime!
+  type: String
+}
+
+// 指定の保育所の午睡チェック機能使用履歴 (ウェブアプリ用)
+listSidsCheckUsageLogs(
+  nurseryId: ID!
+  from: AWSDateTime!
+  to: AWSDateTime!
+  sortDirection: ModelSortDirection
+): {
+  babyId: ID!
+  baby: Baby
+  nurseryId: String
+  type: String
+  createdAt: AWSDateTime!
+}
+
+// 指定の保育所のセンサーデバイス使用履歴 (ウェブアプリ用)
+listSensorPairingLogs(
+  nurseryId: ID!
+  from: AWSDateTime
+  to: AWSDateTime
+  sortDirection: ModelSortDirection
+): {
+  nurseryId: ID!
+  createdAt: String!
+  babyId: ID!
+  baby: Baby
+  deviceName: String
+}
+
+// 指定の午睡チェックシートに管理者認印が押印されているかどうか (ウェブアプリ用)
+getSidsSheetVerifiedLog(nurseryId: String!, date: String!): {
+  id: ID!
+  nurseryId: String!
+  date: String!
+  isVerified: Boolean!
+  approverName: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+// [遺物] 指定の園児のリアルタイム心拍数
+getBabyStatus(id: ID!): {
+  id: ID!
+  status: String
+  updatedAt: AWSDateTime
+  deviceName: String
+  rssi: Int
+  heartRate: Int
+  sitterId: ID
+  sitter: Sitter
+}
+
+// [遺物]
+listBabyStatuss(): [
+  {
+    id: ID!
+    status: String
+    updatedAt: AWSDateTime
+    deviceName: String
+    rssi: Int
+    heartRate: Int
+    sitterId: ID
+    sitter: Sitter
+  }
+]
